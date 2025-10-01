@@ -18,6 +18,7 @@ public class Producto {
     private String imagenURL;
 
     private String nombre;
+    private Boolean sin_tacc;
 
     @Enumerated(EnumType.STRING)
     private Categoria categoria;
@@ -62,5 +63,12 @@ public class Producto {
     }
     public void setCategoria(Categoria categoria) {
         this.categoria = categoria;
+    }
+
+    public Boolean getSin_tacc() {
+        return sin_tacc;
+    }
+    public void setSin_tacc(Boolean sin_tacc) {
+        this.sin_tacc = sin_tacc;
     }
 }

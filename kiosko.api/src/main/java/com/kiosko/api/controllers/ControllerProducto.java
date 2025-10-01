@@ -43,6 +43,7 @@ public class ControllerProducto {
         producto.setPrecio(dto.getPrecio());
         producto.setImagenURL(dto.getImagenUrl());
         producto.setCategoria(dto.getCategoria());
+        producto.setSin_tacc(dto.getSin_tacc());
 
         return productoService.guardar(producto);
     }
@@ -54,6 +55,7 @@ public class ControllerProducto {
             producto.setPrecio(dto.getPrecio());
             producto.setImagenURL(dto.getImagenUrl());
             producto.setCategoria(dto.getCategoria());
+            producto.setSin_tacc(dto.getSin_tacc());
             return ResponseEntity.ok(productoService.guardar(producto));
         }).orElse(ResponseEntity.notFound().build());
     }

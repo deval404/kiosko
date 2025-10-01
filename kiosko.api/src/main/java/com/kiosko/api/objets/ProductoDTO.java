@@ -5,6 +5,7 @@ public class ProductoDTO {
         private Double precio;
         private String imagenUrl;
         private Categoria categoria;
+        private Boolean sin_tacc;
 
 
         public String getNombre() { return nombre; }
@@ -18,4 +19,11 @@ public class ProductoDTO {
 
         public Categoria getCategoria() { return categoria; }
         public void setCategoria(Categoria categoria) { this.categoria = categoria; }
+
+        public Boolean getSin_tacc() {
+                return sin_tacc;
+        }
+        public void setSin_tacc(Boolean sin_tacc) {
+                this.sin_tacc = sin_tacc;
+        }
 }

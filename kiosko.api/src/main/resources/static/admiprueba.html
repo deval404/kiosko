@@ -1,0 +1,235 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+  <meta charset="UTF-8">
+  <title>Panel Administrador</title>
+  <link href="https://fonts.googleapis.com/css2?family=Poppins&display=swap" rel="stylesheet" />
+  
+  <style>
+    body {
+      margin: 0;
+      font-family: 'Poppins', sans-serif;
+      background-color: #f8e8d6;
+      color: #4b3b2a;
+      min-height: 100vh;
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      padding: 2rem;
+    }
+
+    h1 {
+      text-align: center;
+      color: #a67c52;
+      margin-bottom: 2rem;
+    }
+
+    /* Formulario */
+    form {
+      background: #fffaf3;
+      padding: 1.5rem;
+      border-radius: 12px;
+      box-shadow: 0 4px 10px rgba(0,0,0,0.1);
+      margin-bottom: 1rem;
+      width: 100%;
+      max-width: 600px;
+    }
+
+    form input, 
+    form textarea {
+      width: 90%;
+      padding: 0.8rem;
+      margin: 0.5rem 0;
+      border-radius: 8px;
+      border: 2px solid #d9a066;
+      font-family: 'Poppins', sans-serif;
+      font-size: 1rem;
+      outline: none;
+      transition: border-color 0.3s;
+      background-color: white;
+    }
+
+    form input:focus, 
+    form textarea:focus {
+      border-color: #a67c52;
+    }
+
+    #guardar {
+      background-color: #d9a066;
+      color: white;
+      padding: 0.9rem 2rem;
+      border: none;
+      border-radius: 8px;
+      font-size: 1rem;
+      cursor: pointer;
+      margin-top: 1rem;
+      transition: background-color 0.3s, transform 0.2s;
+      font-weight: 600;
+      width: 100%;
+    }
+
+    #guardar:hover {
+      background-color: #c68642;
+      transform: translateY(-2px);
+      box-shadow: 0 6px 12px rgba(0,0,0,0.15);
+    }
+
+    /* Tabla */
+    table {
+      width: 100%;
+      max-width: 900px;
+      border-collapse: collapse;
+      margin-top: 1rem;
+      background: #fff;
+      border-radius: 12px;
+      overflow: hidden;
+      box-shadow: 0 6px 20px rgba(0,0,0,0.05);
+    }
+
+    th, td {
+      border: 1px solid #ddd;
+      padding: 12px;
+      text-align: center;
+      font-size: 0.95rem;
+    }
+
+    th {
+      background: #a67c52;
+      color: white;
+      font-weight: 600;
+    }
+
+    tr:nth-child(even) {
+      background: #fffaf3;
+    }
+
+    /* Botones */
+    button {
+      padding: 6px 12px;
+      margin: 2px;
+      border: none;
+      border-radius: 6px;
+      cursor: pointer;
+      font-size: 0.9rem;
+      font-weight: 600;
+      transition: transform 0.2s, box-shadow 0.2s;
+    }
+
+    button:hover {
+      transform: translateY(-2px);
+      box-shadow: 0 4px 8px rgba(0,0,0,0.15);
+    }
+
+    button.editar {
+      background-color: #ffc107;
+      color: #4b3b2a;
+    }
+
+    button.eliminar {
+      background-color: #dc3545;
+      color: white;
+    }
+
+  </style>
+</head>
+<body>
+
+  <h1>Panel de Administración</h1>
+
+  <div class="boton-inicio">
+    <button onclick="window.location.href='Entrada.html'">Volver al Inicio</button>
+  </div>
+
+  <!-- Formulario para agregar productos -->
+  <form id="formProducto">
+    <input type="text" id="nombre" placeholder="Nombre del producto" required>
+    <textarea id="descripcion" placeholder="Descripción del producto" required></textarea>
+    <input type="number" id="precio" placeholder="Precio" required>
+    <button type="submit" id="guardar">Guardar</button>
+  </form>
+
+  <!-- Tabla de productos -->
+  <table>
+    <thead>
+      <tr>
+        <th>ID</th>
+        <th>Producto</th> <!-- cambiado -->
+        <th>Descripción</th>
+        <th>Precio</th>
+        <th>Acciones</th>
+      </tr>
+    </thead>
+    <tbody id="tabla-body">
+    </tbody>
+  </table>
+
+  <script>
+    const API_URL = "http://localhost:8080/api/v1/productos"; // Ajusta tu ruta base
+
+  // Renderiza tabla desde backend
+  async function renderTabla() {
+    const resp = await fetch(API_URL);
+    const productos = await resp.json();
+
+    const tabla = document.getElementById("tabla-body");
+    tabla.innerHTML = "";
+    productos.forEach(prod => {
+      tabla.innerHTML += `
+        <tr>
+          <td>${prod.id}</td>
+          <td>${prod.nombre}</td>
+          <td>${prod.descripcion}</td>
+          <td>$${prod.precio}</td>
+          <td>
+            <button class="editar" onclick="editar(${prod.id})">Editar</button>
+            <button class="eliminar" onclick="eliminar(${prod.id})">Eliminar</button>
+          </td>
+        </tr>
+      `;
+    });
+  }
+
+  // Guardar producto (POST)
+  document.getElementById("formProducto").addEventListener("submit", async e => {
+    e.preventDefault();
+    let producto = {
+      nombre: document.getElementById("nombre").value,
+      descripcion: document.getElementById("descripcion").value,
+      precio: parseFloat(document.getElementById("precio").value)
+    };
+
+    await fetch(API_URL, {
+      method: "POST",
+      headers: { "Content-Type": "application/json" },
+      body: JSON.stringify(producto)
+    });
+
+    renderTabla();
+    e.target.reset();
+  });
+
+  // Eliminar producto (DELETE)
+  async function eliminar(id) {
+    await fetch(`${API_URL}/${id}`, { method: "DELETE" });
+    renderTabla();
+  }
+
+  // Editar producto (PUT)
+  async function editar(id) {
+    const resp = await fetch(`${API_URL}/${id}`);
+    const prod = await resp.json();
+
+    document.getElementById("nombre").value = prod.nombre;
+    document.getElementById("descripcion").value = prod.descripcion;
+    document.getElementById("precio").value = prod.precio;
+
+    // Eliminar antes de actualizar
+    await eliminar(id);
+  }
+
+  // Inicializar
+  renderTabla();
+  </script>
+
+</body>
+</html>

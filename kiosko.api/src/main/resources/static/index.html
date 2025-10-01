@@ -1,0 +1,116 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8" />
+    <title>Kiosko Espectroluna</title>
+    <link rel="stylesheet" href="styles.css" />
+    <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;500;600;700;800&display=swap" rel="stylesheet" />
+    </head>
+<body>
+    <header>
+        <div class="logo">Kioskito</div>
+        <nav>
+            <a href="Entrada.html">Inicio</a> 
+            <a href="#productos" class="active">Productos</a> 
+            <a href="#productos">Servicios</a>
+            <a href="#">Contacto</a>
+        </nav>
+        <div class="header-actions">
+            <div class="carrito" onclick="mostrarCarrito()" aria-label="Ver carrito">
+                <img src="https://cdn-icons-png.flaticon.com/512/263/263142.png" alt="Carrito" class="carrito-icono" />
+                <div class="contador-carrito" id="contador-carrito">0</div>
+                <div class="carrito-desplegable" id="carrito-desplegable">
+                    <h3>Tu Pedido</h3>
+                    <ul id="lista-carrito">
+                        <li class="carrito-vacio-mensaje">El carrito está vacío.</li>
+                    </ul>
+                    <div class="carrito-totales">
+                        <p>Subtotal: <span id="carrito-subtotal">$0.00</span></p>
+                        <h4>Total Final: <span id="carrito-total">$0.00</span></h4>
+                    </div>
+                    <div class="carrito-acciones">
+                        <button class="btn-vaciar" onclick="vaciarCarrito()">Vaciar Carrito</button>
+                        <button class="btn-continuar" onclick="alert('Continuar a Pago')">Continuar Compra</button>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </header>
+
+    <section class="hero" id="hero">
+        <div class="hero-content">
+            <h1>KIOSKITO ESPECTROLUNA</h1>
+            <p>Cansado de no encontrar productos a un precio accesible, sin que duela la billetera? PUES, ¡AQUÍ TENEMOS LA SOLUCIÓN!</p>
+            <div class="buscador-hero">
+                <input type="search" id="busqueda" placeholder="Buscar productos..." aria-label="Buscar producto" oninput="filtrarProductos()" />
+            </div>
+            
+        </div>
+        
+        <div class="hero-image-container">
+            <img src="tu_imagen_de_producto_grande.png" alt="Producto Destacado del Kiosko" />
+        </div>
+    </section>
+
+    <section class="ofertas-section">
+        <div class="ofertas-slider" id="ofertas-slider">
+            <button class="slider-btn prev" onclick="cambiarOferta(-1)">&#10094;</button>
+            <button class="slider-btn next" onclick="cambiarOferta(1)">&#10095;</button>
+            <div class="slider-container" id="slider-container">
+                <div class="oferta">
+                    <img src="https://i.pinimg.com/736x/ad/e7/61/ade7619f643659b21e5cf6156288dfc0.jpg" alt="Oferta 1: Pan SIN TACC" onerror="this.src='https://via.placeholder.com/800x400?text=Oferta+1'" />
+                </div>
+                <div class="oferta">
+                    <img src="https://i5.walmartimages.com/seo/Dubai-Chocolate-Bar-Pistachio-11-3oz-Premium-Pistachio-Bar-16-Pieces-Bites-Shredded-Phyllo-Dough-Knafeh_84b7fc1d-9bb6-4f8a-af5b-8b4060c6bee9.24e8472fae2ff776e3bea93217d90c80.jpeg" alt="Oferta 2: Chocolate Dubai" onerror="this.src='https://via.placeholder.com/800x400?text=Oferta+2'" />
+                </div>
+                <div class="oferta">
+                    <img src="https://www.coca-cola.com/content/dam/onexp/mx/es/brands/coca-cola/coca-cola-original/Product-Information-Section-Coca-Cola-Original.jpg" alt="Oferta 3: Coca Cola" onerror="this.src='https://via.placeholder.com/800x400?text=Oferta+3'" />
+                </div>
+            </div>
+            <div class="slider-dots" id="slider-dots">
+                <span class="dot active" onclick="mostrarOferta(0)"></span>
+                <span class="dot" onclick="mostrarOferta(1)"></span>
+                <span class="dot" onclick="mostrarOferta(2)"></span>
+            </div>
+        </div>
+    </section>
+
+    <section class="productos-section" id="productos">
+        <div class="volver-inicio">
+            <a href="Entrada.html" class="btn">Volver al Inicio</a>
+        </div>
+        <h2>Nuestros Productos</h2>
+        <div class="filtro-categorias" id="filtro-categorias-botones">
+            <button class="btn-filtro active" data-filtro="todos">Todos</button>
+            <button class="btn-filtro" data-filtro="SIN TACC">SIN TACC</button>
+            <button class="btn-filtro" data-filtro="dulces">Dulces</button>
+            <button class="btn-filtro" data-filtro="bebidas">Bebidas</button>
+            <button class="btn-filtro" data-filtro="snacks">Snacks</button>
+        </div>
+        <div class="grid" id="grid-productos">
+            </div>
+    </section>
+
+    <footer>
+        &copy; 2025. Todos los derechos reservados.
+        <div class="social-icons">
+            <a href="https://www.facebook.com" target="_blank" rel="noopener" aria-label="Facebook">
+                <img src="https://cdn-icons-png.flaticon.com/512/733/733547.png" alt="Facebook" />
+            </a>
+            <a href="https://www.twitter.com" target="_blank" rel="noopener" aria-label="Twitter">
+                <img src="https://cdn-icons-png.flaticon.com/512/733/733579.png" alt="Twitter" />
+            </a>
+            <a href="https://www.instagram.com" target="_blank" rel="noopener" aria-label="Instagram">
+                <img src="https://cdn-icons-png.flaticon.com/512/733/733558.png" alt="Instagram" />
+            </a>
+        </div>
+        <div class="admin-login">
+            <img src="https://cdn-icons-png.flaticon.com/512/1077/1077114.png" alt="Admin Login" class="admin-icono" onclick="mostrarLogin()" title="Login Admin" aria-label="Login Admin"/>
+            <div class="login-exito" id="login-exito">¡Login Exitoso!</div>
+        </div>
+    </footer>
+    
+      
+    <script src="script.js"></script>
+</body>
+</html>

@@ -1,0 +1,33 @@
+<html>
+<head>
+    <title>App.html</title>
+</head>
+<body>
+<form action="controlador.php" method="post">
+<table>
+<tr>
+<td colspan="2" align="center">
+<?php if ($_GET["errorusu"]=="si"){?>
+<p><b>datos incorrectos</b></p>
+
+<?php }else{?>
+<p>Introduce la contraceña</p>
+<?php }?></td>
+</tr>
+
+<br/>
+<tr>
+<td align="right">Usuario:</td>
+<td><input type="text" name="usu" size="8" maxlength="50"/></td></tr><br/>
+
+<tr>
+<td align="right">Clave:</td>
+<td><input type="password" name="contrasenia" size="8" maxlength="20"/></td></tr><br/>
+
+<tr> <td> <input type="submit" value="entrar"/></td></tr>
+
+</table>
+</form>
+
+</body>
+</html>

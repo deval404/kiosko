@@ -1,0 +1,49 @@
+body {
+    margin: 0;
+    font-family: 'Poppins', sans-serif;
+    /* --- FONDO: La imagen de ondas ahora solo será visible fuera del Hero --- */
+    background-size: cover;
+    background-position: center;
+    background-attachment: fixed; 
+    background-color: #f8e8d6; /* Color de respaldo más claro */
+    color: #4b3b2a; 
+    min-height: 100vh;
+    display: flex;
+    flex-direction: column;
+}
+
+.main-container {
+            text-align: center;
+        }
+        .buy-button {
+            display: inline-block;
+            padding: 15px 30px;
+            font-size: 24px;
+            color: white;
+            background-color: #a05b02;
+            border-radius: 8px;
+            text-decoration: none;
+            transition: background-color 0.3s ease;
+            margin-top: 2rem;
+            position: relative;
+            z-index: 2;
+            
+        }
+
+
+        .buy-button:hover {
+            background-color: #0056b3;
+        }
+        .admin-link {
+            margin-top: 20px;
+            font-size: 16px;
+        }
+        .admin-link a {
+            color: #666;
+            text-decoration: none;
+            transition: color 0.3s ease;
+        }
+        .admin-link a:hover {
+            color: #915728;
+            text-decoration: underline;
+        }

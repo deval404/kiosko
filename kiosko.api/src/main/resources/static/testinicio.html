@@ -1,0 +1,24 @@
+<form id="loginForm">
+    <input type="text" id="usuario" placeholder="Usuario" required>
+    <input type="password" id="password" placeholder="Contraseña" required>
+    <button type="submit">Iniciar sesión</button>
+</form>
+
+<script>
+    document.getElementById("loginForm").addEventListener("submit", async e => {
+      e.preventDefault();
+      const usuario = document.getElementById("usuario").value;
+      const password = document.getElementById("password").value;
+
+      const response = await fetch("http://localhost:8080/auth/login?usuario=" + usuario + "&password=" + password, {
+        method: "POST"
+      });
+
+      if (response.ok) {
+        alert("Bienvenido al panel de administración");
+        window.location.href = "admiprueba.html"; // redirige al panel
+      } else {
+        alert("Credenciales incorrectas");
+      }
+    });
+</script>

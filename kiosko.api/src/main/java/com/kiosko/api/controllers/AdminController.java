@@ -7,6 +7,7 @@ import org.springframework.web.bind.annotation.*;
 
 @RestController
 @RequestMapping("/auth")
+@CrossOrigin(origins = "*") // Permite acceso desde tu HTML
 public class AdminController {
 
     private final AutoService authService;
@@ -15,26 +16,27 @@ public class AdminController {
         this.authService = authService;
     }
 
-    // Simulación de login
+    //  Login de administrador
     @PostMapping("/login")
     public ResponseEntity<String> login(@RequestParam String usuario,
                                         @RequestParam String password) {
-        if (authService.esAdmin(usuario, password)) {
+        if (authService.validarLogin(usuario, password)) {
             return ResponseEntity.ok("Bienvenido al panel de administración");
         } else {
-            return ResponseEntity.status(HttpStatus.FORBIDDEN)
-                    .body("Acceso restringido, solo admin.");
+            return ResponseEntity.status(HttpStatus.UNAUTHORIZED)
+                    .body("Credenciales inválidas. Acceso restringido.");
         }
     }
 
-    // Ejemplo de endpoint solo para admins
+    // Endpoint de prueba (solo admins)
     @GetMapping("/panel")
     public ResponseEntity<String> panel(@RequestParam String usuario,
                                         @RequestParam String password) {
-        if (authService.esAdmin(usuario, password)) {
+        if (authService.validarLogin(usuario, password)) {
             return ResponseEntity.ok("Accediste al panel de administración");
         } else {
-            throw new SecurityException("No tienes permisos para ver este recurso.");
+            return ResponseEntity.status(HttpStatus.FORBIDDEN)
+                    .body("No tienes permisos para acceder a este recurso.");
         }
     }
 }

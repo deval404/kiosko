@@ -9,7 +9,7 @@ public class Producto {
 
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
-    private long id;
+    private int id_produ;
 
     private double precio;
     private int cantidad;
@@ -18,16 +18,17 @@ public class Producto {
     private String imagenURL;
 
     private String nombre;
-    private Boolean sin_tacc;
+    private Boolean conTacc;
+    private Boolean alcoholicas;
 
     @Enumerated(EnumType.STRING)
     private Categoria categoria;
 
     public long getId() {
-        return id;
+        return id_produ;
     }
-    public void setId(long id) {
-        this.id = id;
+    public void setId(int id_produ) {
+        this.id_produ = id_produ;
     }
 
     public double getPrecio() {
@@ -65,10 +66,17 @@ public class Producto {
         this.categoria = categoria;
     }
 
-    public Boolean getSin_tacc() {
-        return sin_tacc;
+    public Boolean getConTacc() {
+        return conTacc;
     }
-    public void setSin_tacc(Boolean sin_tacc) {
-        this.sin_tacc = sin_tacc;
+    public void setConTacc(Boolean conTacc) {
+        this.conTacc = conTacc;
+    }
+
+    public Boolean getAlcoholicas() {
+        return alcoholicas;
+    }
+    public void setAlcoholicas(Boolean alcoholicas) {
+        this.alcoholicas = alcoholicas;
     }
 }

@@ -6,6 +6,7 @@ public class ProductoDTO {
         private String imagenUrl;
         private Categoria categoria;
         private Boolean sin_tacc;
+        private Boolean alcoholicas;
 
 
         public String getNombre() { return nombre; }
@@ -26,4 +27,11 @@ public class ProductoDTO {
         public void setSin_tacc(Boolean sin_tacc) {
                 this.sin_tacc = sin_tacc;
         }
+
+        public Boolean getAlcoholicas() {
+        return alcoholicas;
+    }
+        public void setAlcoholicas(Boolean alcoholicas) {
+        this.alcoholicas = alcoholicas;
+    }
 }

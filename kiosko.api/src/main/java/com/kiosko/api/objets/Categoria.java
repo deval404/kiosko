@@ -1,7 +1,8 @@
 package com.kiosko.api.objets;
 
 public enum Categoria {
-    BEBIDAS,
-    SNACKS,
-    DULCES
+    bebidas,
+    snack,
+    dulces,
+    panaderia
 }

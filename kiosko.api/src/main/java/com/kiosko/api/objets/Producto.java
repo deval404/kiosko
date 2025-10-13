@@ -1,10 +1,15 @@
 package com.kiosko.api.objets;
 
 import jakarta.persistence.*;
+import org.springframework.web.bind.annotation.CrossOrigin;
+import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.bind.annotation.RestController;
 
 @Table(name = "Producto")
 @Entity
-
+@RestController
+@CrossOrigin(origins = "http://127.0.0.1:5500") // O simplemente "*" para todos los orígenes durante el desarrollo
+@RequestMapping("/productos")
 public class Producto {
 
     @Id

@@ -142,9 +142,20 @@
 
   <!-- Formulario para agregar productos -->
   <form id="formProducto">
+    <input type="text" id="url_imagen" placeholder="url de imagen" required>
     <input type="text" id="nombre" placeholder="Nombre del producto" required>
     <textarea id="descripcion" placeholder="Descripción del producto" required></textarea>
     <input type="number" id="precio" placeholder="Precio" required>
+    <label for="categoria">Categoría:</label>
+    <select id="categoria" required>
+    <option value="" disabled selected>Selecciona una Categoría</option>
+    <option value="bebidas">Bebidas</option>
+    <option value="snack">Snacks</option>
+    <option value="dulces">Dulce</option> 
+    <option value="panaderia">Panaderia</option> 
+    </select>
+    <input type="checkbox" id="alcoholicas">alcohol
+    <input type="checkbox" id="conTacc">contacc
     <button type="submit" id="guardar">Guardar</button>
   </form>
 
@@ -164,71 +175,235 @@
   </table>
 
   <script>
-    const API_URL = "http://localhost:8080/api/v1/productos"; // Ajusta tu ruta base
+    const API_URL = "http://localhost:8080/productos"; // RUTA DE TU API DE SPRING BOOT
 
-  // Renderiza tabla desde backend
-  async function renderTabla() {
-    const resp = await fetch(API_URL);
-    const productos = await resp.json();
+// =================================================================
+// FUNCIÓN 1: OBTENER TODOS LOS PRODUCTOS (GET)
+// =================================================================
+async function obtenerProductos() {
+    try {
+        const resp = await fetch(API_URL);
+        if (!resp.ok) {
+            // Si la respuesta no es 2xx (por ejemplo, 404 o 500)
+            throw new Error(`Error en la solicitud GET: ${resp.status} ${resp.statusText}`);
+        }
+        const productos = await resp.json();
+        return productos;
+    } catch (error) {
+        console.error('Fallo al obtener la lista de productos. CORS o API no disponible:', error.message);
+        return null; // Devuelve null si hay un fallo
+    }
+}
+
+// =================================================================
+// FUNCIÓN 2: CREAR UN PRODUCTO (POST)
+// (Usando el nombre de función que proporcionaste: crearProductos)
+// =================================================================
+async function crearProductos(producto) {
+    try {
+        const respuesta = await fetch(API_URL, {
+            method: 'POST',
+            headers: {
+                'Content-Type': 'application/json' 
+            },
+            body: JSON.stringify(producto) 
+        });
+
+        if (!respuesta.ok) {
+            const errorData = await respuesta.text(); 
+            console.error('Error al crear el producto. Detalles de la API:', errorData);
+            throw new Error(`Error en la creación: ${respuesta.status}`);
+        }
+
+        const productoCreado = await respuesta.json();
+        console.log('Producto creado exitosamente:', productoCreado);
+        return productoCreado;
+
+    } catch (error) {
+        console.error('Fallo en la conexión o proceso de creación:', error.message);
+        return null;
+    }
+}
+
+// =================================================================
+// FUNCIÓN 3: RENDERIZAR LA TABLA (Muestra los productos en el panel admin)
+// =================================================================
+async function renderTabla() {
+    const productos = await obtenerProductos(); 
 
     const tabla = document.getElementById("tabla-body");
     tabla.innerHTML = "";
-    productos.forEach(prod => {
-      tabla.innerHTML += `
-        <tr>
-          <td>${prod.id}</td>
-          <td>${prod.nombre}</td>
-          <td>${prod.descripcion}</td>
-          <td>$${prod.precio}</td>
-          <td>
-            <button class="editar" onclick="editar(${prod.id})">Editar</button>
-            <button class="eliminar" onclick="eliminar(${prod.id})">Eliminar</button>
-          </td>
-        </tr>
-      `;
-    });
-  }
+    
+    if (!productos || productos.length === 0) {
+        tabla.innerHTML = '<tr><td colspan="5">No hay productos registrados o hubo un error al cargar.</td></tr>';
+        return;
+    }
 
-  // Guardar producto (POST)
-  document.getElementById("formProducto").addEventListener("submit", async e => {
+    productos.forEach(prod => {
+        tabla.innerHTML += `
+            <tr>
+                <td>${prod.id}</td>
+                <td>${prod.nombre}</td>
+                <td>${prod.descripcion}</td>
+                <td>$${parseFloat(prod.precio).toFixed(2)}</td>
+                <td>
+                    <button class="editar" onclick="editar(${prod.id})">Editar</button>
+                    <button class="eliminar" onclick="eliminar(${prod.id})">Eliminar</button>
+                </td>
+            </tr>
+        `;
+    });
+}
+
+
+// =================================================================
+// FUNCIÓN 4: CREAR TARJETA DE PRODUCTO (para la vista del cliente)
+// =================================================================
+function crearTarjetaProducto(producto) {
+    // Usamos 'imagenUrl' si existe, sino 'imagen', sino vacío.
+    const imagenSrc = producto.imagenUrl || producto.imagen || ''; 
+    const precioFijo = parseFloat(producto.precio).toFixed(2);
+    
+    const tarjeta = document.createElement('div');
+    tarjeta.classList.add('producto-card');
+    tarjeta.setAttribute('data-id', producto.id);
+
+    tarjeta.innerHTML = `
+        <img 
+            src="${imagenSrc}" 
+            alt="${producto.nombre}" 
+            onerror="this.src='https://via.placeholder.com/250x150?text=Imagen+no+disponible'" 
+        />
+        <div class="contenido">
+            <h3>${producto.nombre}</h3>
+            <p>${producto.descripcion}</p>
+            <div class="precio">$${precioFijo}</div>
+            <div class="likes">${producto.likes || 0} likes</div> 
+            
+            <button class="btn-agregar" onclick="agregarAlCarrito(${producto.id})">
+                Agregar al Carrito
+            </button>
+        </div>
+    `;
+
+    return tarjeta;
+}
+
+
+// =================================================================
+// FUNCIÓN 5: CARGAR PRODUCTOS EN VISTA DE CLIENTE
+// =================================================================
+async function cargarProductosCliente() {
+    const contenedor = document.getElementById('productos-container');
+    
+    // Si el contenedor no existe (estás solo en la vista de administrador), no hagas nada.
+    if (!contenedor) return; 
+
+    contenedor.innerHTML = 'Cargando productos...'; 
+
+    const productos = await obtenerProductos(); 
+
+    contenedor.innerHTML = ''; 
+
+    if (productos && productos.length > 0) {
+        productos.forEach(producto => {
+            const tarjetaElemento = crearTarjetaProducto(producto);
+            contenedor.appendChild(tarjetaElemento);
+        });
+    } else {
+        contenedor.innerHTML = '<p>Lo sentimos, no hay productos disponibles en este momento.</p>';
+    }
+}
+
+
+// =================================================================
+// MANEJO DEL FORMULARIO: CREACIÓN DE PRODUCTOS
+// =================================================================
+document.getElementById("formProducto").addEventListener("submit", async e => {
     e.preventDefault();
+    
+    // Recoge todos los nuevos campos, incluyendo los checkboxes
     let producto = {
-      nombre: document.getElementById("nombre").value,
-      descripcion: document.getElementById("descripcion").value,
-      precio: parseFloat(document.getElementById("precio").value)
+        nombre: document.getElementById("nombre").value,
+        descripcion: document.getElementById("descripcion").value,
+        precio: parseFloat(document.getElementById("precio").value),
+        // IMPORTANTE: Asegúrate que tu Enum de Java acepte minúsculas o cambia esto a .toUpperCase()
+        categoria: document.getElementById("categoria").value, 
+        imagenUrl: document.getElementById("url_imagen").value,
+        conTacc: document.getElementById("conTacc").checked,
+        alcoholicas: document.getElementById("alcoholicas").checked
     };
 
-    await fetch(API_URL, {
-      method: "POST",
-      headers: { "Content-Type": "application/json" },
-      body: JSON.stringify(producto)
-    });
+    const resultado = await crearProductos(producto);
 
+    if (resultado) {
+        alert(`✅ Producto '${resultado.nombre}' guardado.`);
+    } else {
+        alert("❌ Hubo un error al guardar el producto. Revisa la consola.");
+    }
+    
+    // Recargar ambas vistas
     renderTabla();
+    cargarProductosCliente(); 
     e.target.reset();
-  });
+});
 
-  // Eliminar producto (DELETE)
-  async function eliminar(id) {
-    await fetch(`${API_URL}/${id}`, { method: "DELETE" });
-    renderTabla();
-  }
+// =================================================================
+// FUNCIONES AUXILIARES: ELIMINAR Y EDITAR
+// =================================================================
 
-  // Editar producto (PUT)
-  async function editar(id) {
-    const resp = await fetch(`${API_URL}/${id}`);
-    const prod = await resp.json();
+// Eliminar producto (DELETE)
+async function eliminar(id) {
+    if (confirm(`¿Estás seguro de que quieres eliminar el producto con ID ${id}?`)) {
+        try {
+            const resp = await fetch(`${API_URL}/${id}`, { method: "DELETE" });
+            if (!resp.ok) {
+                throw new Error(`Error en la solicitud DELETE: ${resp.status}`);
+            }
+            alert(`Producto con ID ${id} eliminado.`);
+            renderTabla();
+            cargarProductosCliente();
+        } catch (error) {
+            console.error('Fallo al eliminar:', error.message);
+            alert("Error al eliminar el producto. Revisa la consola.");
+        }
+    }
+}
 
-    document.getElementById("nombre").value = prod.nombre;
-    document.getElementById("descripcion").value = prod.descripcion;
-    document.getElementById("precio").value = prod.precio;
+// Editar producto (Cargar datos para edición)
+async function editar(id) {
+    try {
+        const resp = await fetch(`${API_URL}/${id}`);
+        if (!resp.ok) {
+            throw new Error(`Error al obtener producto para editar: ${resp.status}`);
+        }
+        const prod = await resp.json();
 
-    // Eliminar antes de actualizar
-    await eliminar(id);
-  }
+        // Carga los datos existentes en el formulario
+        document.getElementById("nombre").value = prod.nombre;
+        document.getElementById("descripcion").value = prod.descripcion;
+        document.getElementById("precio").value = prod.precio;
+        // Asume que tienes campos para los demás atributos que se muestran en el GET
 
-  // Inicializar
-  renderTabla();
+    } catch (error) {
+        console.error('Fallo al cargar datos para edición:', error.message);
+        alert("Error al cargar datos. Revisa la consola.");
+    }
+}
+
+// =================================================================
+// FUNCIÓN ADICIONAL REQUERIDA POR EL COMPONENTE DE CLIENTE
+// =================================================================
+function agregarAlCarrito(productoId) {
+    console.log(`Producto ${productoId} agregado al carrito.`);
+    alert(`Agregado producto ID: ${productoId}`);
+}
+
+// Inicializar al cargar la página
+document.addEventListener('DOMContentLoaded', () => {
+    renderTabla(); // Carga la vista de administración
+    cargarProductosCliente(); // Carga la vista de cliente (si el contenedor existe)
+});
   </script>
 
 </body>

@@ -1,11 +1,19 @@
 package com.kiosko.api.objets;
 
+
+import org.springframework.web.bind.annotation.CrossOrigin;
+import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.bind.annotation.RestController;
+
+@RestController
+@CrossOrigin(origins = "http://127.0.0.1:5500") // O simplemente "*" para todos los orígenes durante el desarrollo
+@RequestMapping("/productos")
 public class ProductoDTO {
         private String nombre;
         private Double precio;
         private String imagenUrl;
         private Categoria categoria;
-        private Boolean sin_tacc;
+        private Boolean conTacc;
         private Boolean alcoholicas;
 
 
@@ -21,11 +29,11 @@ public class ProductoDTO {
         public Categoria getCategoria() { return categoria; }
         public void setCategoria(Categoria categoria) { this.categoria = categoria; }
 
-        public Boolean getSin_tacc() {
-                return sin_tacc;
+        public Boolean getconTacc() {
+                return conTacc;
         }
-        public void setSin_tacc(Boolean sin_tacc) {
-                this.sin_tacc = sin_tacc;
+        public void setconTacc(Boolean conTacc) {
+                this.conTacc = conTacc;
         }
 
         public Boolean getAlcoholicas() {

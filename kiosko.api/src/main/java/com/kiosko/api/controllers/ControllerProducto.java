@@ -43,7 +43,7 @@ public class ControllerProducto {
         producto.setPrecio(dto.getPrecio());
         producto.setImagenURL(dto.getImagenUrl());
         producto.setCategoria(dto.getCategoria());
-        producto.setConTacc(dto.getSin_tacc());
+        producto.setConTacc(dto.getconTacc());
         producto.setAlcoholicas(dto.getAlcoholicas());
 
         return productoService.guardar(producto);
@@ -56,7 +56,7 @@ public class ControllerProducto {
             producto.setPrecio(dto.getPrecio());
             producto.setImagenURL(dto.getImagenUrl());
             producto.setCategoria(dto.getCategoria());
-            producto.setConTacc(dto.getSin_tacc());
+            producto.setConTacc(dto.getconTacc());
             producto.setAlcoholicas(dto.getAlcoholicas());
             return ResponseEntity.ok(productoService.guardar(producto));
         }).orElse(ResponseEntity.notFound().build());

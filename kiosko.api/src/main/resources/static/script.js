@@ -322,3 +322,142 @@ setInterval(() => cambiarOferta(1), 4000);
 if (container && slides.length > 0) {
   actualizarSlider();
 }
+
+const API_URL = "http://localhost:8080/productos";
+
+
+        async function obtenerProductos() {
+        try {
+            const resp = await fetch(API_URL);
+            if (!resp.ok) {
+                // Si la respuesta no es 2xx (por ejemplo, 404 o 500)
+                throw new Error(`Error en la solicitud GET: ${resp.status} ${resp.statusText}`);
+            } else{
+                console.log("trajo la wea")
+            }
+            const productos = await resp.json();
+            return productos;
+        } catch (error) {
+            console.error('Fallo al obtener la lista de productos. CORS o API no disponible:', error.message);
+            return null; // Devuelve null si hay un fallo
+        }
+    }
+
+    async function renderTabla() {
+        const productos = await obtenerProductos(); 
+
+        const tabla = document.getElementById("tabla-body");
+        tabla.innerHTML = "";
+        
+        if (!productos || productos.length === 0) {
+            tabla.innerHTML = '<tr><td colspan="5">No hay productos registrados o hubo un error al cargar.</td></tr>';
+            return;
+        }
+
+        productos.forEach(prod => {
+            tabla.innerHTML += `
+                <tr>
+                    <td>${prod.id}</td>
+                    <td>${prod.nombre}</td>
+                    <td>${prod.descripcion}</td>
+                    <td>$${parseFloat(prod.precio).toFixed(2)}</td>
+                    <td>
+                        <button class="editar" onclick="editar(${prod.id})">Editar</button>
+                        <button class="eliminar" onclick="eliminar(${prod.id})">Eliminar</button>
+                    </td>
+                </tr>
+            `;
+        });
+    }
+
+    // ... lógica para dibujar la tabla .
+
+// Llama a la función al cargar la página
+document.addEventListener('DOMContentLoaded', renderTabla); 
+
+/**
+ * Crea el componente HTML (la "tarjeta") para un producto individual.
+ * @param {Object} producto - El objeto del producto con sus propiedades.
+ * @returns {HTMLElement} El elemento div que contiene la tarjeta del producto.
+ */
+function crearTarjetaProducto(producto) {
+    
+    // 1. Manejo Seguro de la URL de la Imagen
+    // Asignamos una cadena vacía si producto.imagen es null/undefined para evitar el error.
+    const imagenUrlDesdeAPI = producto.imagen || ''; 
+
+    // Usamos el API_URL para crear la ruta completa si es una ruta relativa.
+    const baseUrl = API_URL.substring(0, API_URL.lastIndexOf('/')); // Obtiene http://localhost:8080/api/v1
+    
+    // Comprueba si ya es una URL absoluta, si no, la combina con la base.
+    // Usamos imagenUrlDesdeAPI para evitar el error de 'undefined'
+    let imageUrl;
+    
+    if (imagenUrlDesdeAPI.startsWith('http') || imagenUrlDesdeAPI.startsWith('https')) {
+        // Es una URL absoluta (Nube o externa)
+        imageUrl = imagenUrlDesdeAPI;
+    } else if (imagenUrlDesdeAPI.startsWith('/')) {
+        // Es una URL relativa al dominio (ej: /images/prod.jpg)
+        // Usamos solo el origen para evitar conflictos: http://localhost:8080/images/prod.jpg
+        const origin = new URL(API_URL).origin; 
+        imageUrl = origin + imagenUrlDesdeAPI;
+    } else if (imagenUrlDesdeAPI) {
+        // Es una ruta sin barra (ej: images/prod.jpg). La combinamos con la base de la API.
+        imageUrl = `${baseUrl}/${imagenUrlDesdeAPI}`;
+    } else {
+        // La URL está vacía o es nula, usamos una URL temporal forzada.
+        imageUrl = 'https://via.placeholder.com/1x1.png'; // Usamos un pixel temporal muy pequeño
+    }
+
+
+    // 2. Crear el elemento principal <div>
+    const tarjeta = document.createElement('div');
+    tarjeta.classList.add('producto-card'); 
+    tarjeta.setAttribute('data-id', producto.id);
+
+    // 3. Definir el contenido interno de la tarjeta
+    tarjeta.innerHTML = `
+        <img 
+            src="${imageUrl}" 
+            alt="${producto.nombre}" 
+            onerror="this.src='https://via.placeholder.com/250x150?text=Imagen+no+disponible'" 
+        />
+        <div class="contenido">
+            <h3>${producto.nombre}</h3>
+            <div class="precio">$${parseFloat(producto.precio).toFixed(2)}</div>
+            <div class="likes">${producto.likes || 0} likes</div> 
+            
+            <button class="btn-agregar" onclick="agregarAlCarrito(${producto.id})">
+                Agregar al Carrito
+            </button>
+        </div>
+    `;
+
+    return tarjeta;
+}
+
+
+/**
+ * Obtiene los productos del backend y renderiza las tarjetas en el contenedor.
+ */
+async function cargarProductosCliente() {
+    const contenedor = document.getElementById('grid-productos');
+    contenedor.innerHTML = 'Cargando productos...'; // Mensaje de carga
+
+    const productos = await obtenerProductos(); // Reusa tu función existente
+
+    // Limpiamos el contenedor
+    contenedor.innerHTML = ''; 
+
+    if (productos && productos.length > 0) {
+        productos.forEach(producto => {
+            // Creamos la tarjeta usando la nueva función
+            const tarjetaElemento = crearTarjetaProducto(producto);
+            // Añadimos la tarjeta al contenedor principal
+            contenedor.appendChild(tarjetaElemento);
+        });
+    } else {
+        contenedor.innerHTML = '<p>Lo sentimos, no hay productos disponibles en este momento.</p>';
+    }
+}
+cargarProductosCliente(); 

@@ -129,6 +129,55 @@
       background-color: #dc3545;
       color: white;
     }
+    /* ... Tus estilos existentes ... */
+
+    /* Estilos del Modal */
+    .modal {
+        display: none; /* Oculto por defecto */
+        position: fixed;
+        z-index: 1000; /* Asegura que esté encima de todo */
+        left: 0;
+        top: 0;
+        width: 100%;
+        height: 100%;
+        overflow: auto;
+        background-color: rgba(0, 0, 0, 0.4);
+        padding-top: 50px;
+    }
+
+    .modal-contenido {
+        background-color: #fffaf3;
+        margin: 5% auto; /* Centrado vertical y horizontal */
+        padding: 20px;
+        border: 1px solid #d9a066;
+        border-radius: 12px;
+        width: 80%;
+        max-width: 500px;
+        box-shadow: 0 8px 25px rgba(0, 0, 0, 0.2);
+    }
+    
+    .modal-contenido h2 {
+        text-align: center;
+        color: #a67c52;
+        margin-bottom: 1.5rem;
+    }
+
+    .modal-contenido label {
+        display: block;
+        margin-top: 10px;
+        font-weight: 600;
+        color: #4b3b2a;
+    }
+
+    .modal-botones {
+        display: flex;
+        justify-content: space-between;
+        margin-top: 20px;
+    }
+
+    .modal-botones button {
+        width: 48%;
+    }
 
   </style>
 </head>
@@ -158,6 +207,50 @@
     <input type="checkbox" id="conTacc">contacc
     <button type="submit" id="guardar">Guardar</button>
   </form>
+
+  <div id="modalEdicion" class="modal">
+    <div class="modal-contenido">
+        <h2>Editar Producto</h2>
+        
+        <form id="formEdicion">
+            <input type="hidden" id="edit-id"> 
+            
+            <label for="edit-nombre">Nombre:</label>
+            <input type="text" id="edit-nombre" required>
+            
+            <label for="edit-descripcion">Descripción:</label>
+            <textarea id="edit-descripcion" required></textarea>
+            
+            <label for="edit-precio">Precio:</label>
+            <input type="number" id="edit-precio" step="0.01" required>
+
+            <label for="edit-categoria">Categoría:</label>
+            <select id="edit-categoria" required>
+                <option value="snack">Snack</option>
+                <option value="bebidas">Bebida</option>
+                <option value="panaderia">Panaderia</option>
+                <option value="dulces">dulces</option>
+                </select>
+            
+            <label for="edit-url_imagen">URL Imagen:</label>
+            <input type="text" id="edit-url_imagen">
+
+            <div style="margin: 1rem 0;">
+                <input type="checkbox" id="edit-conTacc">
+                <label for="edit-conTacc">Contiene TACC</label>
+            </div>
+            <div style="margin: 1rem 0;">
+                <input type="checkbox" id="edit-alcoholicas">
+                <label for="edit-alcoholicas">Es Alcohólica</label>
+            </div>
+
+            <div class="modal-botones">
+                <button type="submit" id="btnActualizar">Actualizar</button>
+                <button type="button" onclick="cerrarModal()">Cancelar</button>
+            </div>
+        </form>
+    </div>
+</div>
 
   <!-- Tabla de productos -->
   <table>
@@ -379,11 +472,22 @@ async function editar(id) {
         }
         const prod = await resp.json();
 
-        // Carga los datos existentes en el formulario
-        document.getElementById("nombre").value = prod.nombre;
-        document.getElementById("descripcion").value = prod.descripcion;
-        document.getElementById("precio").value = prod.precio;
-        // Asume que tienes campos para los demás atributos que se muestran en el GET
+        // 1. Cargar datos en el modal
+        document.getElementById("edit-id").value = prod.id;
+        document.getElementById("edit-nombre").value = prod.nombre;
+        document.getElementById("edit-descripcion").value = prod.descripcion;
+        document.getElementById("edit-precio").value = prod.precio;
+        
+        // Asegúrate de que el valor del Enum coincida con una <option>
+        document.getElementById("edit-categoria").value = prod.categoria; 
+
+        // Manejo de valores que podrían ser null o undefined
+        document.getElementById("edit-url_imagen").value = prod.imagenUrl || prod.imagen || '';
+        document.getElementById("edit-conTacc").checked = prod.conTacc || false;
+        document.getElementById("edit-alcoholicas").checked = prod.alcoholicas || false;
+
+        // 2. Mostrar el modal
+        document.getElementById("modalEdicion").style.display = "block";
 
     } catch (error) {
         console.error('Fallo al cargar datos para edición:', error.message);
@@ -392,12 +496,75 @@ async function editar(id) {
 }
 
 // =================================================================
-// FUNCIÓN ADICIONAL REQUERIDA POR EL COMPONENTE DE CLIENTE
+// NUEVA FUNCIÓN: CERRAR MODAL
 // =================================================================
-function agregarAlCarrito(productoId) {
-    console.log(`Producto ${productoId} agregado al carrito.`);
-    alert(`Agregado producto ID: ${productoId}`);
+function cerrarModal() {
+    document.getElementById("modalEdicion").style.display = "none";
 }
+
+// =================================================================
+// NUEVA FUNCIÓN: ACTUALIZAR PRODUCTO (PUT)
+// =================================================================
+async function actualizarProducto(id, producto) {
+    try {
+        const respuesta = await fetch(`${API_URL}/${id}`, {
+            method: 'PUT', // Método HTTP para actualización
+            headers: {
+                'Content-Type': 'application/json'
+            },
+            body: JSON.stringify(producto)
+        });
+
+        if (!respuesta.ok) {
+            const errorData = await respuesta.text();
+            console.error('Error al actualizar el producto. Detalles:', errorData);
+            throw new Error(`Error en la actualización: ${respuesta.status}`);
+        }
+
+        const productoActualizado = await respuesta.json();
+        console.log('Producto actualizado exitosamente:', productoActualizado);
+        return productoActualizado;
+
+    } catch (error) {
+        console.error('Fallo en la conexión o proceso de actualización:', error.message);
+        return null;
+    }
+}
+
+
+// =================================================================
+// MANEJO DEL FORMULARIO DE EDICIÓN
+// =================================================================
+document.getElementById("formEdicion").addEventListener("submit", async e => {
+    e.preventDefault();
+    
+    // 1. Recoger los datos del modal
+    const id = document.getElementById("edit-id").value;
+    const productoActualizado = {
+        nombre: document.getElementById("edit-nombre").value,
+        descripcion: document.getElementById("edit-descripcion").value,
+        precio: parseFloat(document.getElementById("edit-precio").value),
+        categoria: document.getElementById("edit-categoria").value,
+        imagenUrl: document.getElementById("edit-url_imagen").value,
+        conTacc: document.getElementById("edit-conTacc").checked,
+        alcoholicas: document.getElementById("edit-alcoholicas").checked
+    };
+
+    // 2. Llamar a la función de actualización
+    const resultado = await actualizarProducto(id, productoActualizado);
+
+    if (resultado) {
+        alert(`✅ Producto '${resultado.nombre}' actualizado.`);
+        cerrarModal(); // Cerrar el modal al finalizar
+    } else {
+        alert("❌ Hubo un error al actualizar el producto. Revisa la consola.");
+    }
+    
+    // 3. Recargar las tablas para reflejar los cambios
+    renderTabla();
+    cargarProductosCliente(); 
+});
+
 
 // Inicializar al cargar la página
 document.addEventListener('DOMContentLoaded', () => {

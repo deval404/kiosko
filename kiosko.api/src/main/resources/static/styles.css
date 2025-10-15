@@ -817,3 +817,46 @@ footer {
 .slide-in {
     animation: slideIn 0.6s ease-out;
 }
+
+#grid-productos {
+    /* 1. Habilitar CSS Grid */
+    display: grid;
+    
+    /* 2. Definir las columnas: Repite automáticamente columnas */
+    /* minmax(280px, 1fr): Cada columna tendrá un ancho mínimo de 280px y crecerá
+       hasta un tamaño fraccional (1fr) para ocupar el espacio restante. */
+    grid-template-columns: repeat(auto-fit, minmax(280px, 1fr));
+    
+    /* 3. Espacio entre las tarjetas (columnas y filas) */
+    gap: 20px; 
+    
+    /* Asegura que el grid no exceda el ancho de la pantalla */
+    width: 100%; 
+    max-width: 1200px; /* O el ancho máximo que desees para tu contenido */
+    margin: 0 auto; /* Centrar el grid */
+}
+
+.producto-card {
+    background-color: #fff;
+    border-radius: 10px;
+    box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+    overflow: hidden; /* Importante para la imagen */
+    display: flex;
+    flex-direction: column;
+}
+
+.producto-card img {
+    /* Fija el tamaño de la imagen */
+    width: 100%;
+    height: 180px; /* <--- ALTURA FIJA para todas las imágenes */
+    object-fit: cover; /* Recorta la imagen para cubrir el espacio sin distorsionar */
+    border-bottom: 1px solid #eee;
+}
+
+/* Opcional: Para que el contenido de la tarjeta ocupe el espacio restante */
+.producto-card .contenido {
+    padding: 15px;
+    display: flex;
+    flex-direction: column;
+    flex-grow: 1; /* Permite que el contenido se expanda */
+}

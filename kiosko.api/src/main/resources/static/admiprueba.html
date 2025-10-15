@@ -183,17 +183,16 @@
 </head>
 <body>
 
-  <h1>Panel de Administración</h1>
+<h1>Panel de Administración</h1>
 
-  <div class="boton-inicio">
+<div class="boton-inicio">
     <button onclick="window.location.href='Entrada.html'">Volver al Inicio</button>
-  </div>
+</div>
 
-  <!-- Formulario para agregar productos -->
-  <form id="formProducto">
-    <input type="text" id="url_imagen" placeholder="url de imagen" required>
+<!-- Formulario para agregar productos -->
+<form id="formProducto">
+    <input type="text" id="imagenURL" placeholder="url de imagen" required>
     <input type="text" id="nombre" placeholder="Nombre del producto" required>
-    <textarea id="descripcion" placeholder="Descripción del producto" required></textarea>
     <input type="number" id="precio" placeholder="Precio" required>
     <label for="categoria">Categoría:</label>
     <select id="categoria" required>
@@ -206,9 +205,9 @@
     <input type="checkbox" id="alcoholicas">alcohol
     <input type="checkbox" id="conTacc">contacc
     <button type="submit" id="guardar">Guardar</button>
-  </form>
+</form>
 
-  <div id="modalEdicion" class="modal">
+<div id="modalEdicion" class="modal">
     <div class="modal-contenido">
         <h2>Editar Producto</h2>
         
@@ -218,8 +217,6 @@
             <label for="edit-nombre">Nombre:</label>
             <input type="text" id="edit-nombre" required>
             
-            <label for="edit-descripcion">Descripción:</label>
-            <textarea id="edit-descripcion" required></textarea>
             
             <label for="edit-precio">Precio:</label>
             <input type="number" id="edit-precio" step="0.01" required>
@@ -258,7 +255,6 @@
       <tr>
         <th>ID</th>
         <th>Producto</th> <!-- cambiado -->
-        <th>Descripción</th>
         <th>Precio</th>
         <th>Acciones</th>
       </tr>
@@ -337,7 +333,6 @@ async function renderTabla() {
             <tr>
                 <td>${prod.id}</td>
                 <td>${prod.nombre}</td>
-                <td>${prod.descripcion}</td>
                 <td>$${parseFloat(prod.precio).toFixed(2)}</td>
                 <td>
                     <button class="editar" onclick="editar(${prod.id})">Editar</button>
@@ -369,7 +364,6 @@ function crearTarjetaProducto(producto) {
         />
         <div class="contenido">
             <h3>${producto.nombre}</h3>
-            <p>${producto.descripcion}</p>
             <div class="precio">$${precioFijo}</div>
             <div class="likes">${producto.likes || 0} likes</div> 
             
@@ -388,7 +382,6 @@ function crearTarjetaProducto(producto) {
 // =================================================================
 async function cargarProductosCliente() {
     const contenedor = document.getElementById('productos-container');
-    
     // Si el contenedor no existe (estás solo en la vista de administrador), no hagas nada.
     if (!contenedor) return; 
 
@@ -418,11 +411,10 @@ document.getElementById("formProducto").addEventListener("submit", async e => {
     // Recoge todos los nuevos campos, incluyendo los checkboxes
     let producto = {
         nombre: document.getElementById("nombre").value,
-        descripcion: document.getElementById("descripcion").value,
         precio: parseFloat(document.getElementById("precio").value),
         // IMPORTANTE: Asegúrate que tu Enum de Java acepte minúsculas o cambia esto a .toUpperCase()
         categoria: document.getElementById("categoria").value, 
-        imagenUrl: document.getElementById("url_imagen").value,
+        imagenUrl: document.getElementById("imagenURL").value,
         conTacc: document.getElementById("conTacc").checked,
         alcoholicas: document.getElementById("alcoholicas").checked
     };
@@ -475,7 +467,6 @@ async function editar(id) {
         // 1. Cargar datos en el modal
         document.getElementById("edit-id").value = prod.id;
         document.getElementById("edit-nombre").value = prod.nombre;
-        document.getElementById("edit-descripcion").value = prod.descripcion;
         document.getElementById("edit-precio").value = prod.precio;
         
         // Asegúrate de que el valor del Enum coincida con una <option>
@@ -542,7 +533,6 @@ document.getElementById("formEdicion").addEventListener("submit", async e => {
     const id = document.getElementById("edit-id").value;
     const productoActualizado = {
         nombre: document.getElementById("edit-nombre").value,
-        descripcion: document.getElementById("edit-descripcion").value,
         precio: parseFloat(document.getElementById("edit-precio").value),
         categoria: document.getElementById("edit-categoria").value,
         imagenUrl: document.getElementById("edit-url_imagen").value,
@@ -571,7 +561,7 @@ document.addEventListener('DOMContentLoaded', () => {
     renderTabla(); // Carga la vista de administración
     cargarProductosCliente(); // Carga la vista de cliente (si el contenedor existe)
 });
-  </script>
+</script>
 
 </body>
 </html>

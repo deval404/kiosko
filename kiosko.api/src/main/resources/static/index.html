@@ -47,9 +47,6 @@
             
         </div>
         
-        <div class="hero-image-container">
-            <img src="tu_imagen_de_producto_grande.png" alt="Producto Destacado del Kiosko" />
-        </div>
     </section>
 
     <section class="ofertas-section">
@@ -82,10 +79,10 @@
         <h2>Nuestros Productos</h2>
         <div class="filtro-categorias" id="filtro-categorias-botones">
             <button class="btn-filtro active" data-filtro="todos">Todos</button>
-            <button class="btn-filtro" data-filtro="SIN TACC">SIN TACC</button>
+            <button class="btn-filtro" id="btn-filtro-tacc" onclick="filtrarProductosPorTacc()">SIN TACC</button>
             <button class="btn-filtro" data-filtro="dulces">Dulces</button>
             <button class="btn-filtro" data-filtro="bebidas">Bebidas</button>
-            <button class="btn-filtro" data-filtro="snacks">Snacks</button>
+            <button class="btn-filtro" data-filtro="snack">Snacks</button>
         </div>
         <div class="grid" id="grid-productos">
             </div>

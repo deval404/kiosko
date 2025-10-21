@@ -29,24 +29,6 @@ public class Application {
 		};
 	}
 
-    @Configuration
-    public class WebConfig {
-        @Bean
-        public WebMvcConfigurer corsConfigurer() {
-            return new WebMvcConfigurer() {
-                @Override
-                public void addCorsMappings(CorsRegistry registry) {
-                    registry.addMapping("/**")
-                            .allowedOrigins(
-                                    "https://kiosko-889m.onrender.com", // dominio de tu frontend
-                                    "http://localhost:8080" // opcional para pruebas locales
-                            )
-                            .allowedMethods("GET", "POST", "PUT", "DELETE")
-                            .allowCredentials(true);
-                }
-            };
-        }
-    }
 	/*
 	@Bean
 	public CommandLineRunner aniade(ProductoRepository repo) {

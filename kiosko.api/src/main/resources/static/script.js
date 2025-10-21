@@ -367,7 +367,8 @@ function filtrarProductosPorTacc() {
     const btnTacc = document.getElementById('btn-filtro-tacc'); // Asumo que tienes un botón con este ID
     if (btnTacc) {
         btnTacc.classList.toggle('active', filtroTaccActivo);
-        btnTacc.textContent = filtroTaccActivo ? 'Todos los Productos' : 'Sin TACC';
+        btnTacc.textContent = filtroTaccActivo ? 'Sin TACC' : 'Con TACC'; 
+        
     }
 }
 window.filtrarProductosPorTacc = filtrarProductosPorTacc;

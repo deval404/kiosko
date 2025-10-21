@@ -2,29 +2,46 @@
 <html lang="es">
 <head>
     <meta charset="UTF-8">
-    <title>Inicio</title>
-    <link href="https://fonts.googleapis.com/css2?family=Poppins&display=swap" rel="stylesheet">
-    <style>
-        body {
-          font-family: 'Poppins', sans-serif;
-          background-color: #f8e8d6;
-          text-align: center;
-          padding-top: 80px;
-        }
-        a {
-          text-decoration: none;
-          padding: 10px 20px;
-          background-color: #d9a066;
-          color: white;
-          border-radius: 8px;
-        }
-    </style>
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Kiosko Espectroluna</title>
+    <link rel="stylesheet" href="stylesEntrada.css" />
+    <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;500;600;700;800&display=swap" rel="stylesheet" />
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/animate.css/4.1.1/animate.min.css"/>
 </head>
 <body>
-<h1>Bienvenido</h1>
-<a href="index.html">Comprar</a>
-<br><br>
-<p>Soporte:</p>
-<a href="app.html">Modo admin</a>
+<div class="header-nav">
+    <div class="logo">KIOSKITO ESPECTROLUNA</div>
+    <nav>
+        <a href="#ubicacion">Ubicación</a>
+        <a href="#contacto">Contacto</a>
+        <a href="#soporte">Soporte</a>
+        <a href="#horarios">Horarios</a>
+    </nav>
+</div>
+
+<div class="hero-section">
+    <div class="hero-content-wrapper">
+        <div class="hero-text-content">
+            <h1>¡Tu antojo, a un solo clic!!</h1>
+            <p>Cansado de no encontrar productos accesibles sin que duela la billetera?... Pues, has encontrado el mejor kiosko!</p>
+            <div class="actions-container">
+                <a href="index.html" class="buy-button animate__animated animate__pulse animate__infinite">HACER PEDIDO AHORA</a>
+            </div>
+            <div class="admin-access-prominent">
+                <p class="admin-support-text">Para gestión interna:</p>
+                <a href="app.html" class="admin-link-prominent">Acceso de Administrador</a>
+            </div>
+        </div>
+        <div class="hero-visual-decor">
+        </div>
+    </div>
+</div>
+
+<script src="https://unpkg.com/scrollreveal"></script>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/gsap/3.12.5/gsap.min.js"></script>
+
+
+
+<script src="../../../../../../New%20folder/kiosko.api/src/main/resources/static/entradaanimacion.js"></script>
 </body>
 </html>

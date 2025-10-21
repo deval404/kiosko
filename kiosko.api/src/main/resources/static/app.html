@@ -55,7 +55,7 @@
       const usuario = document.getElementById("usuario").value;
       const password = document.getElementById("password").value;
 
-      const res = await fetch(`http://localhost:8080/auth/login?usuario=${usuario}&password=${password}`, {
+      const res = await fetch(`https://api.render.com/deploy/srv-d3rlrn95pdvs73fqaa90?key=0BmmwAZZ_9c/auth/login?usuario=${usuario}&password=${password}`, {
         method: "POST"
       });
 

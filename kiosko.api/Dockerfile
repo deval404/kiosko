@@ -4,6 +4,8 @@ WORKDIR /app
 
 COPY . .
 
+RUN ls -la /app
+
 RUN mvn clean package -DskipTests
 
 FROM eclipse-temurin:17-jre

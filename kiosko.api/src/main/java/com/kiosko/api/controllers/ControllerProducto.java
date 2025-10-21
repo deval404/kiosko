@@ -11,7 +11,7 @@ import com.kiosko.api.services.ProductoService;
 import java.util.List;
 
 @RestController
-@RequestMapping("/productos")
+@RequestMapping("/api/productos")
 @CrossOrigin(origins = "*")//permite peticiones desde otros orígenes
 public class ControllerProducto {
 

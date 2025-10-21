@@ -4,6 +4,9 @@ import org.springframework.boot.CommandLineRunner;
 import org.springframework.boot.SpringApplication;
 import org.springframework.boot.autoconfigure.SpringBootApplication;
 import org.springframework.context.annotation.Bean;
+import org.springframework.context.annotation.Configuration;
+import org.springframework.web.servlet.config.annotation.CorsRegistry;
+import org.springframework.web.servlet.config.annotation.WebMvcConfigurer;
 
 import javax.sql.DataSource;
 import java.sql.Connection;
@@ -25,6 +28,25 @@ public class Application {
 			}
 		};
 	}
+
+    @Configuration
+    public class WebConfig {
+        @Bean
+        public WebMvcConfigurer corsConfigurer() {
+            return new WebMvcConfigurer() {
+                @Override
+                public void addCorsMappings(CorsRegistry registry) {
+                    registry.addMapping("/**")
+                            .allowedOrigins(
+                                    "https://kiosko-889m.onrender.com", // dominio de tu frontend
+                                    "http://localhost:8080" // opcional para pruebas locales
+                            )
+                            .allowedMethods("GET", "POST", "PUT", "DELETE")
+                            .allowCredentials(true);
+                }
+            };
+        }
+    }
 	/*
 	@Bean
 	public CommandLineRunner aniade(ProductoRepository repo) {

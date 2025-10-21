@@ -7,7 +7,7 @@ import org.springframework.web.bind.annotation.*;
 
 @RestController
 @RequestMapping("/auth")
-@CrossOrigin(origins = "*") // Permite acceso desde tu HTML
+//@CrossOrigin(origins = "*") // Permite acceso desde tu HTML
 public class AdminController {
 
     private final AutoService authService;

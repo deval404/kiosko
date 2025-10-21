@@ -6,7 +6,7 @@ let productos = [];
 let carrito = JSON.parse(localStorage.getItem('carrito')) || [];
 let isAdmin = JSON.parse(localStorage.getItem('isAdmin')) || false;
 
-const API_URL = "https://api.render.com/deploy/srv-d3rlrn95pdvs73fqaa90?key=0BmmwAZZ_9c/productos";
+const API_URL = "https://kiosko-889m.onrender.com/api/productos";
 
 // Elementos del DOM
 const gridProductos = document.getElementById('grid-productos');
